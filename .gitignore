@@ -1,0 +1,102 @@
+# --------------------------------------------------
+# Python artifacts
+# --------------------------------------------------
+
+# ไฟล์ .pyc, .pyo, หรือ __pycache__ ที่ Python สร้างขึ้นเวลา import/module compile
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# virtual environment แบบสร้างด้วย venv
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# --------------------------------------------------
+# Configuration / Credential files
+# --------------------------------------------------
+
+# ไฟล์ environment variable (เก็บ API keys, รหัสผ่าน ฯลฯ)
+.env
+.env.*
+
+# --------------------------------------------------
+# IDE / Editor-specific
+# --------------------------------------------------
+
+# VS Code
+.vscode/
+.history/
+
+
+# --------------------------------------------------
+# OS-specific
+# --------------------------------------------------
+
+# macOS
+.DS_Store
+
+
+# --------------------------------------------------
+# Logs and runtime files
+# --------------------------------------------------
+
+# ไฟล์ log ต่าง ๆ
+*.log
+
+# หน้าต่างรัน Uvicorn/FastAPI อาจสร้างไฟล์ pid หรือ temp อื่น ๆ
+*.pid
+*.sock
+
+# --------------------------------------------------
+# Dependency caches / packaging
+# --------------------------------------------------
+
+# ไฟล์ package-lock หรือ pipenv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ไฟล์ wheel และ egg
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# --------------------------------------------------
+# Coverage, test, reporting
+# --------------------------------------------------
+
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+nosetests.xml
+coverage.xml
+*,cover
+
+# --------------------------------------------------
+# Docker (ถ้ามี)
+# --------------------------------------------------
+
+# ถ้ามีไฟล์ Dockerfile หรือ docker-compose.yaml อยู่ ก็อาจมีโฟลเดอร์นี้เกิดขึ้น
+docker-compose.override.yml
+docker-compose.*.yml
+*.env.docker
+
+# --------------------------------------------------
+# Miscellaneous
+# --------------------------------------------------
+
+# หน้าจอ temporary, backup
+*.swp
+*.swo
+*~
+
+# ถ้ามีไฟล์ VS Code snippets หรือ launch configurations ส่วนตัว เก็บไว้ใน .vscode/ เท่านั้น

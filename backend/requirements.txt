@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+typhoon-ocr
+redis>=4.0.0
+python-multipart
+openai
+pydantic-settings
