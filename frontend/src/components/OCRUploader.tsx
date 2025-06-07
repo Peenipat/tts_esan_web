@@ -1,5 +1,6 @@
 // src/components/OCRUploader.tsx
 import React, { useState } from "react";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function OCRUploader() {
   const [file, setFile] = useState<File | null>(null);
@@ -31,7 +32,7 @@ function OCRUploader() {
       formData.append("task_type", "default");
       formData.append("page_num", "1");
 
-      const res = await fetch("http://localhost:8000/api/ocr/?task_type=default&page_num=1", {
+      const res = await fetch(`${API_BASE}/api/ocr/?task_type=default&page_num=1`, {
         method: "POST",
         body: formData,
       });
