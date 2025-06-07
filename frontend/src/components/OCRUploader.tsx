@@ -31,7 +31,6 @@ function OCRUploader() {
       formData.append("file", file);
       formData.append("task_type", "default");
       formData.append("page_num", "1");
-
       const res = await fetch(`${API_BASE}/api/ocr/?task_type=default&page_num=1`, {
         method: "POST",
         body: formData,
