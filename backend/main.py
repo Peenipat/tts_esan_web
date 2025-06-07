@@ -17,8 +17,7 @@ origins = [
     "http://localhost:5173",  # ถ้าใช้ Vite หรือ Next.js dev
     "http://127.0.0.1:5173",
     "http://my-ocr-frontend.s3-website.ap-southeast-1.amazonaws.com/"
-    # ... หรือ "*" เพื่ออนุญาตทุกที่ (สำหรับ development เท่านั้น)
-    "*"
+    "http://47.129.43.106",
 ]
 
 app.add_middleware(
