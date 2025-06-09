@@ -38,6 +38,6 @@ app.include_router(
 # Summary endpoints
 app.include_router(
     summary_api.router,
-    prefix="/api/summary",
+    prefix="/api",
     tags=["Summary"]
 )
