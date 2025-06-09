@@ -10,11 +10,6 @@ async def ocr_endpoint(
     task_type: str = "default",
     page_num: int = 1
 ):
-    """
-    Endpoint: POST /api/ocr/
-    รับไฟล์ (PDF หรือรูปภาพ) + พารามิเตอร์ task_type, page_num
-    ส่งผลลัพธ์ที่เป็น Markdown กลับมา
-    """
     try:
         # อ่านไฟล์เป็น bytes
         file_bytes = await file.read()

@@ -5,3 +5,4 @@ redis>=4.0.0
 python-multipart
 openai
 pydantic-settings
+google-genai
