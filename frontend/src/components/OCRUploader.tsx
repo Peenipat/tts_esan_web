@@ -140,8 +140,12 @@ function OCRUploader() {
       {summaryError && <div className="mt-4 text-red-600">Error: {summaryError}</div>}
       {summary && (
         <div className="mt-6">
-          <h3 className="text-xl font-semibold mb-2">ผลลัพธ์สรุป</h3>
-          <div className="prose max-w-none whitespace-pre-wrap">{summary}</div>
+          <h3 className="text-xl font-semibold mb-2">ผลลัพธ์สรุป (แก้ไขได้):</h3>
+          <textarea
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}  // ถ้าไม่ให้แก้ ก็ลบ onChange ออก
+            className="w-full h-64 border border-gray-300 rounded p-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-y whitespace-pre-wrap"
+          />
         </div>
       )}
     </div>
