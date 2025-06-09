@@ -1,5 +1,3 @@
-# backend/app/services/summary_service.py
-
 import hashlib
 from typing import Optional
 

@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import ocr
 from app.api import summary_api
 
-app = FastAPI(title="OCR Service", version="0.1.0")
+app = FastAPI(title="OCR Service & Summary", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,4 +24,4 @@ app.add_middleware(
 )
 
 app.include_router(ocr.router, prefix="/api/ocr", tags=["OCR"])
-app.include_router(summary_api.router, prefix="/api", tags=["Summary"])
+app.include_router( summary_api.router,prefix="/api/summary",tags=["Summary"])

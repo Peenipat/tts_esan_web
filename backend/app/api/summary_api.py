@@ -1,15 +1,10 @@
-# backend/app/api/summary_api.py
-
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from app.services.summary_service import summarize_text
 
-router = APIRouter(
-    prefix="/summary",
-    tags=["summary"],
-)
+router = APIRouter()
 
 class SummaryRequest(BaseModel):
     text: str = Field(..., description="ข้อความต้นฉบับที่ต้องการสรุป")
