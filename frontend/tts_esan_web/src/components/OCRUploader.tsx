@@ -1,90 +1,71 @@
-// src/components/OCRUploader.tsx
 import React, { useState } from "react";
+const API_BASE = import.meta.env.VITE_DEV;
+// const API_BASE = import.meta.env.VITE_PRODUCTION;
+// src/components/OCRUploader.tsx
 
-function OCRUploader() {
+
+type OCRUploaderProps = {
+  onResult: (text: string) => void;
+};
+
+export function OCRUploader({ onResult }: OCRUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [result, setResult] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-      setResult("");    // ล้างผลลัพธ์เก่า
-      setError("");
-    }
+    if (!e.target.files?.length) return;
+    setFile(e.target.files[0]);
+    setError("");
   };
 
   const handleSubmit = async () => {
     if (!file) return;
-
     setLoading(true);
     setError("");
-    setResult("");
-
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("task_type", "default");   // เปลี่ยนได้ถ้าคุณมีโหมดอื่น
+      formData.append("task_type", "default");
       formData.append("page_num", "1");
 
-      const res = await fetch("http://localhost:8000/api/ocr/?task_type=default&page_num=1", {
+      const res = await fetch(`${API_BASE}/api/ocr/?task_type=default&page_num=1`, {
         method: "POST",
         body: formData,
       });
 
       if (!res.ok) {
-        // อ่านข้อความ error ที่ FastAPI คืนให้ (detail)
-        const errorJson = await res.json();
-        throw new Error(errorJson.detail || "Unknown error from server");
+        const err = await res.json();
+        throw new Error(err.detail || "Unknown server error");
       }
-
-      const json = await res.json();
-      setResult(json.result);
+      const { result } = await res.json();
+      onResult(result);
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Error while processing OCR");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-4 max-w-xl mx-auto">
-      <label className="block mb-2 font-medium text-gray-700">เลือกไฟล์ (PDF/ภาพ):</label>
+    <div className="p-4 border rounded space-y-3">
+      <h3 className="font-semibold">1. UploadOCR</h3>
       <input
         type="file"
         accept="application/pdf,image/*"
         onChange={handleFileChange}
-        className="border border-gray-300 rounded px-2 py-1 w-full"
+        className="w-full border px-2 py-1 rounded"
       />
-
       <button
         onClick={handleSubmit}
-        disabled={loading || !file}
-        className={`mt-4 px-4 py-2 rounded text-white ${
-          loading || !file ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+        disabled={!file || loading}
+        className={`px-4 py-2 rounded text-white ${
+          !file || loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
         }`}
       >
         {loading ? "กำลังประมวลผล..." : "ประมวลผล OCR"}
       </button>
-
-      {error && (
-        <div className="mt-4 text-red-600 font-medium">
-          เกิดข้อผิดพลาด: {error}
-        </div>
-      )}
-
-      {result && (
-        <div className="mt-4">
-          <label className="block mb-2 font-medium text-gray-700">ผลลัพธ์ OCR:</label>
-          <div className="p-4 bg-gray-100 rounded whitespace-pre-wrap overflow-x-auto">
-            {result}
-          </div>
-        </div>
-      )}
+      {error && <div className="text-red-600">{error}</div>}
     </div>
   );
 }
-
-export default OCRUploader;
