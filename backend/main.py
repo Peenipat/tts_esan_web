@@ -1,4 +1,6 @@
 from dotenv import load_dotenv
+
+from app.api import gemini_full_api
 load_dotenv()
 
 from fastapi import FastAPI
@@ -23,5 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(ocr.router, prefix="/api/ocr", tags=["OCR"])
+app.include_router(ocr.router, prefix="/api/typhoon", tags=["typhoon"])
 app.include_router( summary_api.router,prefix="/api/summary",tags=["Summary"])
+app.include_router(gemini_full_api.router,prefix='/api/gemini',tags=["Gemini"])

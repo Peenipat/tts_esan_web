@@ -24,7 +24,6 @@ async def perform_ocr(file_path: str, task_type: str, page_num: int) -> str:
             return result
 
         except Exception as e:
-            # ไม่แยก RateLimitError แล้ว จับทุก exception แล้ว retry 
             retries += 1
             if retries > max_retries:
                 raise e

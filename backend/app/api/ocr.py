@@ -11,10 +11,8 @@ async def ocr_endpoint(
     page_num: int = 1
 ):
     try:
-        # อ่านไฟล์เป็น bytes
         file_bytes = await file.read()
 
-        # เรียก OCR + Cache
         result = await ocr_with_cache(file_bytes, file.filename, task_type, page_num)
 
         return JSONResponse(status_code=200, content={"result": result})
