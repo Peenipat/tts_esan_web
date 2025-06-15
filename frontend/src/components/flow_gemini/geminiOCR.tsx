@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-const API_BASE = import.meta.env.VITE_DEV;
-// const API_BASE = import.meta.env.VITE_PRODUCTION;
+//const API_BASE = import.meta.env.VITE_DEV;
+const API_BASE = import.meta.env.VITE_PRODUCTION;
 
 type OCRUploaderProps = {
   onResult: (text: string) => void;

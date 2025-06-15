@@ -1,7 +1,8 @@
 // src/components/TtsPlayer.tsx
 import { useState } from 'react';
 
-const API_BASE = import.meta.env.VITE_DEV;
+// const API_BASE = import.meta.env.VITE_DEV;
+const API_BASE = import.meta.env.VITE_PRODUCTION;
 type TtsPlayerProps = {
   initialText: string;
 };
