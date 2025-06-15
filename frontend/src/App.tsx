@@ -4,10 +4,13 @@ import { useState } from "react";
 import { TyphoonOCR } from "./components/flow_typhoon/typhoonOCR";
 import { TextSummary } from "./components/flow_typhoon/TextSummary";
 import { GeminiOCR } from './components/flow_gemini/geminiOCR';
+import { TextSummary_gemini } from './components/flow_gemini/TextSummary_gemini';
+import TtsPlayer from './components/flow_gemini/TtsPlayer';
 
 function App() {
   // เปลี่ยนจาก number|null เป็น number|"" 
   const [ocrText, setOcrText] = useState<string>("")
+  const [summaryText,setSummaryText] = useState<string>("")
   const [selectModel, setSelectModel] = useState<number | "">("")
   console.log(ocrText)
 
@@ -28,7 +31,7 @@ function App() {
         >
           <option value="">-- กรุณาเลือกโมเดล --</option>
           <option value={0}>Typhoon + Gemini</option>
-          <option value={1}>Gemini</option>
+          <option value={1}>Gemini + IApp</option>
           <option value={2}>Model Two</option>
         </select>
       </div>
@@ -49,7 +52,8 @@ function App() {
       {selectModel === 1 && (
         <div className="space-y-6">
           <GeminiOCR onResult={setOcrText}/>
-          {ocrText && <TextSummary initialText={ocrText} />}
+          {ocrText && <TextSummary_gemini initialText={ocrText} onResult={setSummaryText}/>}
+          {summaryText && <TtsPlayer initialText={summaryText} />}
         </div>
       )}
 
@@ -59,6 +63,8 @@ function App() {
           {/* <ModelTwoComponent text={ocrText} /> */}
         </div>
       )}
+      {/* <TtsPlayer initialText={summaryText} /> */}
+       {/**/}
     </div>
   )
 }

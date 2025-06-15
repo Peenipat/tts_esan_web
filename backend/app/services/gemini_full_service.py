@@ -1,9 +1,12 @@
 # backend/app/services/ocr_service.py
 from google import genai
-from fastapi import HTTPException
+from fastapi import HTTPException 
 from app.core.config import settings
 import tempfile
 import os
+import io 
+import wave
+
 
 client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
@@ -63,3 +66,4 @@ async def summarize_gemini(
         raise HTTPException(status_code=502, detail=f"Summarization failed: {e}")
 
     return resp.text
+

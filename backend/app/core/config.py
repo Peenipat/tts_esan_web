@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str 
     GEMINI_API_KEY:str   
     GEMINI_MODEL: str = "gemini-2.0-flash"  
+    IAPP_TTS_KEY:str
+    IAPP_TTS_URL: str = "https://api.iapp.co.th/thai-tts-kaitom2/tts"
 
     class Config:
         env_file = ".env"    

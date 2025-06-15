@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Form, Depends
+from fastapi import APIRouter, UploadFile, File, Form, Response
 from app.services.gemini_full_service import ocr_gemini , summarize_gemini
 
 router = APIRouter()
@@ -21,7 +21,7 @@ async def ocr_endpoint(
 @router.post("/summary")
 async def summary_endpoint(
     text: str = Form(..., description="ข้อความที่ต้องการสรุป"),
-    prompt: str = Form("สรุปข้อความต่อไปนี้เป็นสรุปสั้น ๆ:", description="คำสั่งสำหรับสรุป (optional)")
+    prompt: str = Form(..., description="คำสั่งสำหรับสรุป (optional)")
 ):
     """
     ■ รับ form-data:
@@ -31,3 +31,4 @@ async def summary_endpoint(
     """
     summary = await summarize_gemini(text=text, prompt=prompt)
     return {"summary": summary}
+

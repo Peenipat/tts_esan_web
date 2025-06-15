@@ -62,8 +62,6 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
         }} 
         placeholder="กรอก prompt"
         className="w-full border px-2 py-1 rounded" />
-
-
       </div>
 
       <button
