@@ -1,7 +1,7 @@
 // src/components/TtsPlayer.tsx
 import { useState } from 'react';
 
-const API_BASE = import.meta.env.VITE_DEV;
+// const API_BASE = import.meta.env.VITE_DEV;
 type TtsPlayerProps = {
   initialText: string;
 };
@@ -27,7 +27,7 @@ function TtsPlayer({ initialText }: TtsPlayerProps) {
       formData.append('text', text);
       formData.append('language', language);
 
-      const response = await fetch(`${API_BASE}/api/iapp-tts`, {
+      const response = await fetch(`/api/iapp-tts`, {
         method: 'POST',
         body: formData,
       });

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-const API_BASE = import.meta.env.VITE_DEV;
+// const API_BASE = import.meta.env.VITE_DEV;
 // const API_BASE = import.meta.env.VITE_PRODUCTION;
 
 type OCRUploaderProps = {
@@ -28,7 +28,7 @@ export function TyphoonOCR({ onResult }: OCRUploaderProps) {
       formData.append("task_type", "default");
       formData.append("page_num", "1");
 
-      const res = await fetch(`${API_BASE}/api/ocr/typhoon/?task_type=default&page_num=${numPage}`, {
+      const res = await fetch(`/api/ocr/typhoon/?task_type=default&page_num=${numPage}`, {
         method: "POST",
         body: formData,
       });

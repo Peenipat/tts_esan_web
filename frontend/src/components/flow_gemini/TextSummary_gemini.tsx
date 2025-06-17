@@ -1,5 +1,5 @@
 import { useState } from "react";
-const API_BASE = import.meta.env.VITE_DEV;
+// const API_BASE = import.meta.env.VITE_DEV;
 // const API_BASE = import.meta.env.VITE_PRODUCTION;
 
 type TextSummaryProps = {
@@ -26,7 +26,7 @@ export function TextSummary_gemini({ initialText,onResult }: TextSummaryProps) {
         formData.append("prompt", prompt)
       }
 
-      const res = await fetch(`${API_BASE}/api/gemini/summary`, {
+      const res = await fetch(`/api/gemini/summary`, {
         method: "POST",
         body: formData,
       });
