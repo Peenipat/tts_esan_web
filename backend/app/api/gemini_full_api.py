@@ -3,6 +3,7 @@ from app.services.gemini_full_service import ocr_gemini , summarize_gemini
 
 router = APIRouter()
 
+@router.post("")
 @router.post("/")
 async def ocr_endpoint(
     prompt: str = Form(..., description="ข้อความสั่งให้ OCR"),
