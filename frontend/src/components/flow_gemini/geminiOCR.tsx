@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 // const API_BASE = import.meta.env.VITE_DEV;
-// const API_BASE = import.meta.env.VITE_PRODUCTION;
+const API_BASE = import.meta.env.VITE_PRODUCTION;
 
 type OCRUploaderProps = {
   onResult: (text: string) => void;
@@ -27,7 +27,7 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
       formData.append("file", file);
       formData.append("prompt", prompt)
 
-      const res = await fetch(`/api/gemini/`, {
+      const res = await fetch(`${API_BASE}/api/gemini/`, {
         method: "POST",
         body: formData,
       });
