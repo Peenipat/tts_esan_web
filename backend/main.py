@@ -18,6 +18,7 @@ app.add_middleware(
         "http://my-ocr-frontend.s3-website.ap-southeast-1.amazonaws.com",
         "http://esan-tts.online",
         "http://www.esan-tts.online",
+        "http://47.129.43.106",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:5173",
