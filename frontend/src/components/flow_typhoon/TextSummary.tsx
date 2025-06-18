@@ -1,6 +1,6 @@
 import  { useState } from "react";
 // const API_BASE = import.meta.env.VITE_DEV;
-const API_BASE = import.meta.env.VITE_PRODUCTION;
+// const API_BASE = import.meta.env.VITE_PRODUCTION;
 
 type TextSummaryProps = {
   initialText: string;
@@ -16,7 +16,7 @@ export function TextSummary({ initialText }: TextSummaryProps) {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE}/api/summary/text`, {
+      const res = await fetch(`/api/summary/text`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, use_cache: true }),
