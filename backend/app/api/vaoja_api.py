@@ -10,9 +10,13 @@ class TTSRequest(BaseModel):
     text: str
     speaker: str = "mukda"
     pace: float = 1.0
+class TTSResponse(BaseModel):
+    message: str
+    wav_url: str
+    qr_url: str
 
 
-@router.post("/vaoja-tts")
+@router.post("/vaoja-tts"  , response_model=TTSResponse)
 def synthesize_tts(request: TTSRequest):
     result = tts_service.synthesize(
         text=request.text,
