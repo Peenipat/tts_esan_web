@@ -6,6 +6,7 @@ import { TextSummary } from "./components/flow_typhoon/TextSummary";
 import { GeminiOCR } from './components/flow_gemini/geminiOCR';
 import { TextSummary_gemini } from './components/flow_gemini/TextSummary_gemini';
 import TtsPlayer from './components/flow_gemini/TtsPlayer';
+import VaojaPlayer from './components/flow_gemini/VaojaPlayer';
 
 function App() {
   // เปลี่ยนจาก number|null เป็น number|"" 
@@ -63,8 +64,8 @@ function App() {
           {/* <ModelTwoComponent text={ocrText} /> */}
         </div>
       )}
-      {/* <TtsPlayer initialText={summaryText} /> */}
-       {/**/}
+      <VaojaPlayer initialText={summaryText} />
+
     </div>
   )
 }
