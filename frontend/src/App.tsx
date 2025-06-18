@@ -9,7 +9,6 @@ import TtsPlayer from './components/flow_gemini/TtsPlayer';
 import VaojaPlayer from './components/flow_gemini/VaojaPlayer';
 
 function App() {
-  // เปลี่ยนจาก number|null เป็น number|"" 
   const [ocrText, setOcrText] = useState<string>("")
   const [summaryText,setSummaryText] = useState<string>("")
   const [selectModel, setSelectModel] = useState<number | "">("")
