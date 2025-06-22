@@ -11,7 +11,6 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
-  const [prompt, setPrompt] = useState<string>("")
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
@@ -26,7 +25,6 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("prompt", prompt)
 
       const res = await fetch(`/api/gemini/`, {
         method: "POST",
@@ -55,15 +53,6 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
         onChange={handleFileChange}
         className="w-full border px-2 py-1 rounded"
       />
-      <div>
-        <label htmlFor="prompt" className="font-semibold">2. Set prompt</label>
-        <input type="text" onChange={(e) => {
-          const value = e.target.value
-          setPrompt(value)
-        }} 
-        placeholder="กรอก prompt"
-        className="w-full border px-2 py-1 rounded" />
-      </div>
 
       <button
         onClick={handleSubmit}

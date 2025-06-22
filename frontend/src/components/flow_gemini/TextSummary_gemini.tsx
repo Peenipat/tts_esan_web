@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import SummaryRenderer from "../Rendder/SummaryRender";
 //const API_BASE = import.meta.env.VITE_DEV;
 // const API_BASE = import.meta.env.VITE_DEV;
 // const API_BASE = import.meta.env.VITE_PRODUCTION;
@@ -8,10 +9,45 @@ type TextSummaryProps = {
   onResult: (text: string) => void;
 };
 
-export function TextSummary_gemini({ initialText,onResult }: TextSummaryProps) {
+interface SummaryItem {
+  id: string;
+  text: string;
+}
+export function SummaryProcessor({ summary }: { summary: string }) {
+  const [summaryList, setSummaryList] = useState<SummaryItem[]>([]);
+
+  useEffect(() => {
+    if (!summary) return;
+
+    const items = summary.split(/\n(?=\d+:)/g).map((item) => {
+      const match = item.match(/^(\d+):\s*(.*)/s);
+      if (!match) return null;
+
+      return {
+        id: match[1],
+        text: match[2].trim(),
+      };
+    });
+
+    setSummaryList(items.filter(Boolean) as SummaryItem[]);
+  }, [summary]);
+
+  return (
+    <div className="space-y-4">
+      {summaryList.map((item) => (
+        <div key={item.id} className="p-4 border rounded shadow-sm bg-white text-gray-900">
+          <h2 className="font-bold">ข้อ {item.id}</h2>
+          <p>{item.text}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+export function TextSummary_gemini({ initialText, onResult }: TextSummaryProps) {
   const [text, setText] = useState(initialText);
   const [summary, setSummary] = useState("");
-  const [prompt, setPrompt] = useState<string>("")
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -21,11 +57,6 @@ export function TextSummary_gemini({ initialText,onResult }: TextSummaryProps) {
     try {
       const formData = new FormData();
       formData.append("text", text);
-      if (prompt === "") {
-        formData.append("prompt", "สรุปข้อความที่ให้ไปเป็นข้อความสั้น ๆ : ")
-      } else {
-        formData.append("prompt", prompt)
-      }
 
       const res = await fetch(`/api/gemini/summary`, {
         method: "POST",
@@ -54,15 +85,6 @@ export function TextSummary_gemini({ initialText,onResult }: TextSummaryProps) {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <div>
-        <label htmlFor="prompt" className="font-semibold">2. Set prompt</label>
-        <input type="text" onChange={(e) => {
-          const value = e.target.value
-          setPrompt(value)
-        }}
-          placeholder="กรอก prompt"
-          className="w-full border px-2 py-1 rounded" />
-      </div>
       <button
         onClick={handleSummarize}
         disabled={loading}
@@ -74,12 +96,9 @@ export function TextSummary_gemini({ initialText,onResult }: TextSummaryProps) {
       {error && <div className="text-red-600">{error}</div>}
       {summary && (
         <>
-          <label className="block mt-4 mb-1 font-medium">ผลลัพธ์:</label>
-          <textarea
-            className="w-full h-32 border rounded p-2 bg-gray-50"
-            value={summary}
-            readOnly
-          />
+          <div className="container mx-auto px-4 py-6">
+            <SummaryRenderer summary={summary} />
+          </div>
         </>
       )}
     </div>

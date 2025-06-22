@@ -11,8 +11,7 @@ import VaojaPlayer from './components/flow_gemini/VaojaPlayer';
 function App() {
   const [ocrText, setOcrText] = useState<string>("")
   const [summaryText,setSummaryText] = useState<string>("")
-  const [selectModel, setSelectModel] = useState<number | "">("")
-  console.log(ocrText)
+  // const [selectModel, setSelectModel] = useState<number | "">("")
 
   return (
     <div className="min-h-screen bg-white p-6">
@@ -20,7 +19,7 @@ function App() {
         <label htmlFor="modelSelect" className="mr-2 font-medium">
           เลือกโมเดล:
         </label>
-        <select
+        {/* <select
           id="modelSelect"
           value={selectModel}
           onChange={(e) => {
@@ -33,7 +32,7 @@ function App() {
           <option value={0}>Typhoon + Gemini</option>
           <option value={1}>Gemini + IApp</option>
           <option value={2}>Model Two</option>
-        </select>
+        </select> */}
       </div>
 
       {selectModel === "" && (

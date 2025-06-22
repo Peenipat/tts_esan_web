@@ -10,6 +10,9 @@ from app.api import ocr
 from app.api import summary_api
 from app.api import iapp_tts_api
 from app.api import vaoja_api
+from app.api import combine_audio
+from app.api import s3_upload
+
 app = FastAPI(title="OCR Service & Summary", version="0.1.0")
 
 app.add_middleware(
@@ -34,3 +37,5 @@ app.include_router( summary_api.router,prefix="/api/summary",tags=["Summary"])
 app.include_router(gemini_full_api.router,prefix='/api/gemini',tags=["Gemini"])
 app.include_router(iapp_tts_api.router,prefix='/api',tags=["IApp"])
 app.include_router(vaoja_api.router,prefix='/api',tags=["vaoja"])
+app.include_router(combine_audio.router,prefix='/api',tags=["combine-audio"])
+app.include_router(s3_upload.router,prefix='/api',tags=['s3'])
