@@ -5,9 +5,10 @@ import React, { useState } from "react";
 
 type OCRUploaderProps = {
   onResult: (text: string) => void;
+  onFile:(file:File)=> void
 };
 
-export function GeminiOCR({ onResult }: OCRUploaderProps) {
+export function GeminiOCR({ onResult,onFile }: OCRUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -25,6 +26,7 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
     try {
       const formData = new FormData();
       formData.append("file", file);
+      onFile(file)
 
       const res = await fetch(`/api/gemini/`, {
         method: "POST",

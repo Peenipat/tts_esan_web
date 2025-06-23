@@ -1,48 +1,61 @@
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse
-import subprocess
-import tempfile
-import requests
-import os
-import shutil
-import uuid
-import boto3
+import json
+from typing import Annotated
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi.responses import JSONResponse
+import subprocess, tempfile, requests, os, shutil, uuid
+from app.services.s3_uploader import S3Uploader
+from tempfile import SpooledTemporaryFile
+
 router = APIRouter()
+@router.post("/combine-upload")
+async def combine_and_upload(
+    audio_urls: Annotated[str, Form()],
+    pdf_file: UploadFile = File(None),
+    img_file: UploadFile = File(None),
+):
+    urls = json.loads(audio_urls)
+    tmp_dir = tempfile.mkdtemp()
 
-@router.post("/combine")
-async def combine_audio(audio_urls: list[str]):
     try:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            input_files = []
+        # 1. ดาวน์โหลดไฟล์เสียงทั้งหมด
+        input_paths = []
+        for i, url in enumerate(urls):
+            r = requests.get(url)
+            if r.status_code != 200:
+                raise HTTPException(400, f"Cannot download {url}")
+            path = os.path.join(tmp_dir, f"audio{i}.wav")
+            with open(path, "wb") as f:
+                f.write(r.content)
+            input_paths.append(path)
 
-            # 1. ดาวน์โหลดไฟล์เสียง
-            for i, url in enumerate(audio_urls):
-                r = requests.get(url)
-                if r.status_code != 200:
-                    raise Exception(f"Failed to download file: {url}")
-                file_path = os.path.join(tmpdir, f"audio{i}.wav")
-                with open(file_path, "wb") as f:
-                    f.write(r.content)
-                input_files.append(file_path)
+        # 2. เขียนไฟล์ list.txt สำหรับ ffmpeg concat
+        list_path = os.path.join(tmp_dir, "list.txt")
+        with open(list_path, "w") as f:
+            for path in input_paths:
+                f.write(f"file '{path}'\n")
 
-            # 2. สร้าง list.txt
-            list_file = os.path.join(tmpdir, "list.txt")
-            with open(list_file, "w") as f:
-                for path in input_files:
-                    f.write(f"file '{path}'\n")
+        # 3. รวมเสียง
+        output_path = os.path.join(tmp_dir, "combined.wav")
+        subprocess.run([
+            "ffmpeg", "-f", "concat", "-safe", "0", "-i", list_path, "-c", "copy", output_path
+        ], check=True)
 
-            # 3. รวมไฟล์ด้วย ffmpeg
-            temp_output = os.path.join(tmpdir, "combined.wav")
-            subprocess.run([
-                "ffmpeg", "-f", "concat", "-safe", "0", "-i", list_file, "-c", "copy", temp_output
-            ], check=True)
+        # 4. เตรียมไฟล์สำหรับอัปโหลด
+        uploader = S3Uploader()
+        with open(output_path, "rb") as f:
+            temp_file = SpooledTemporaryFile()
+            temp_file.write(f.read())
+            temp_file.seek(0)
 
-            # ✅ 4. ย้ายไฟล์ออกมานอก temp ก่อน return
-            final_path = f"/tmp/combined_{uuid.uuid4().hex}.wav"
-            shutil.copyfile(temp_output, final_path)
+    # ❌ อย่าใช้ UploadFile(...) ปลอม
+    # ✅ ส่ง BinaryIO ตรง ๆ แทน พร้อมระบุ content_type เอง
+            metadata = await uploader.upload_voice_bundle(
+                wav_file=temp_file,         # BinaryIO
+                pdf_file=pdf_file,
+                img_file=img_file
+            )
 
-        # return หลังออกจาก with-block แล้ว (ไฟล์ยังอยู่)
-        return FileResponse(final_path, media_type="audio/wav", filename="combined.wav")
+        return {"status": "success", "data": metadata}
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Combine failed: {str(e)}")
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
