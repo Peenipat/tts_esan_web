@@ -1,7 +1,6 @@
-// src/components/TtsPlayer.tsx
 import { useState } from 'react';
 
-// const API_BASE = import.meta.env.VITE_PRODUCTION;
+const API_BASE = import.meta.env.VITE_DEV;
 
 type TtsPlayerProps = {
   initialText: string;
@@ -24,7 +23,7 @@ function VaojaPlayer({ initialText }: TtsPlayerProps) {
     setAudioUrl(null);
 
     try {
-      const response = await fetch(`/api/vaoja-tts`, {
+      const response = await fetch(`${API_BASE}/api/vaoja-tts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,14 +43,12 @@ function VaojaPlayer({ initialText }: TtsPlayerProps) {
       const data = await response.json();
       const wavUrl = data.wav_url;
 
-      if (!wavUrl) {
-        throw new Error('ไม่พบลิงก์ไฟล์เสียงจาก API');
-      }
+      if (!wavUrl) throw new Error('ไม่พบลิงก์ไฟล์เสียง');
 
       setAudioUrl(wavUrl);
 
       const audio = new Audio(wavUrl);
-      await audio.play().catch(e => console.error('Error playing audio:', e));
+      await audio.play();
     } catch (err: any) {
       setError(err.message ?? 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ');
     } finally {
@@ -60,43 +57,37 @@ function VaojaPlayer({ initialText }: TtsPlayerProps) {
   };
 
   return (
-    <div className="p-6 w-full mx-auto border rounded-lg shadow-sm">
-      <h2 className="text-2xl font-semibold mb-4">Vaoja TTS Player</h2>
+    <div className="bg-white border rounded-xl p-6 shadow-sm w-full">
+      <h2 className="text-xl font-bold mb-4">🔊 Text-to-Speech</h2>
 
       <textarea
         rows={4}
         value={text}
         onChange={e => setText(e.target.value)}
+        className="w-full p-3 border rounded-md mb-4 resize-none focus:outline-none focus:ring-2 focus:ring-blue-300"
+        placeholder="กรอกข้อความที่ต้องการแปลงเสียง..."
         disabled={loading}
-        className="w-full p-3 mb-4 border rounded-md disabled:opacity-50"
-        placeholder="กรอกข้อความที่นี่..."
       />
 
       <button
         onClick={handleGenerateSpeech}
         disabled={loading}
-        className={`w-full py-3 text-white font-medium rounded-md 
-          ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
-        `}
+        className={`w-full py-2 rounded-md text-white font-medium transition 
+          ${loading ? "bg-gray-300" : "bg-blue-600 hover:bg-blue-700"}`}
       >
-        {loading ? 'กำลังสร้างเสียง...' : 'แปลงข้อความเป็นเสียง'}
+        {loading ? "กำลังแปลงเสียง..." : "แปลงข้อความเป็นเสียง"}
       </button>
 
       {error && (
-        <p className="mt-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-md">
-          Error: {error}
-        </p>
+        <div className="mt-4 p-3 bg-red-50 text-red-600 border border-red-300 rounded">
+          ⚠️ {error}
+        </div>
       )}
 
       {audioUrl && (
-        <div className="mt-6 text-center">
-          <h3 className="text-xl font-semibold mb-3">ฟังเสียง:</h3>
-          <audio controls src={audioUrl} className="w-full mb-2">
-            เบราว์เซอร์ไม่รองรับการเล่นเสียง
-          </audio>
-          <p className="text-sm text-gray-500">
-            สามารถดาวน์โหลดไฟล์ได้ที่ปุ่มดาวน์โหลดด้านขวา
-          </p>
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-2">ฟังเสียงที่ได้</h3>
+          <audio controls src={audioUrl} className="w-full rounded" />
         </div>
       )}
     </div>
