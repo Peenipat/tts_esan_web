@@ -6,3 +6,8 @@ python-multipart
 openai
 pydantic-settings
 google-genai
+pydub
+boto3
+pillow
+python-dotenv
+requests
