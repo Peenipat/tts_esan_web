@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
+
 
 type OCRUploaderProps = {
   onResult: (text: string) => void;
@@ -48,19 +51,21 @@ export function GeminiOCR({ onResult, onFile }: OCRUploaderProps) {
   };
 
   return (
-    <div className="bg-[#1a0f2b] text-white p-6 rounded-xl space-y-6 border border-[#3b2b4f] shadow-lg">
-      <h2 className="text-xl font-semibold">📄 อัปโหลดเอกสารและดูผล OCR</h2>
+    <div className="bg-[#f8f1e4] text-[#4e2b1d] p-6 rounded-xl space-y-6 border border-[#dab88b] shadow-md">
+      <h2 className="text-xl font-semibold">📄 แนบเอกสารเพื่อแปลงข้อความ</h2>
 
       {/* Preview */}
-      <div className="w-full border-2 border-dashed border-[#4a3b5c] rounded-xl h-48 flex items-center justify-center text-gray-400 text-sm">
+      <div className="w-full border-2 border-dashed border-[#d6a55c] rounded-xl h-48 flex items-center justify-center text-[#a37745] text-sm bg-[#fcf9f3]">
         {file ? (
-          <img
-            src={URL.createObjectURL(file)}
-            alt="Preview"
-            className="max-h-40 object-contain rounded-md"
-          />
+          <Zoom>
+            <img
+              src={URL.createObjectURL(file)}
+              alt="Preview"
+              className="max-h-40 object-contain rounded-md cursor-zoom-in"
+            />
+          </Zoom>
         ) : (
-          <span>📷 Preview will appear here</span>
+          <span>📷 ตัวอย่างรูปจะโชว์ตรงนี้</span>
         )}
       </div>
 
@@ -74,7 +79,7 @@ export function GeminiOCR({ onResult, onFile }: OCRUploaderProps) {
       />
       <label
         htmlFor="upload"
-        className="bg-gradient-to-r from-purple-600 to-indigo-700 text-white px-4 py-2 rounded-md cursor-pointer hover:opacity-90 transition text-center inline-block shadow"
+        className="bg-[#eab308] hover:bg-[#ca8a04] text-white px-4 py-2 rounded-md cursor-pointer transition text-center inline-block shadow font-semibold"
       >
         📁 เลือกไฟล์
       </label>
@@ -85,22 +90,22 @@ export function GeminiOCR({ onResult, onFile }: OCRUploaderProps) {
         disabled={!file || loading}
         className={`w-full py-2 rounded-md text-white font-semibold transition 
           ${!file || loading
-            ? "bg-gray-500 cursor-not-allowed"
-            : "bg-gradient-to-r from-purple-700 to-indigo-800 hover:opacity-90 shadow-lg"}`}
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-[#f59e0b] to-[#b45309] hover:opacity-90 shadow-md"}`}
       >
-        {loading ? "กำลังประมวลผล..." : "🔍 ประมวลผล OCR"}
+        {loading ? "กำลังแปลงข้อความ..." : "🔍 เริ่มประมวลผล OCR"}
       </button>
 
       {/* OCR Result */}
       <div>
-        <h3 className="text-lg font-semibold mb-2">OCR Result</h3>
-        <div className="whitespace-pre-wrap text-gray-300 leading-relaxed text-sm min-h-[6rem] border-t border-[#3b2b4f] pt-3">
-          {ocrText || "ยังไม่มีผลลัพธ์"}
+        <h3 className="text-lg font-semibold mb-2">📜 ผลลัพธ์ OCR</h3>
+        <div className="whitespace-pre-wrap text-[#5c3c22] leading-relaxed text-sm min-h-[6rem] border-t border-[#dab88b] pt-3 bg-[#fdf8f1] p-2 rounded-md">
+          {ocrText || "ยังไม่มีข้อความที่แปลงได้"}
         </div>
       </div>
 
       {/* Error */}
-      {error && <div className="text-red-400 text-sm">{error}</div>}
+      {error && <div className="text-red-500 text-sm">{error}</div>}
     </div>
   );
 }

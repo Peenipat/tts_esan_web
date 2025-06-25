@@ -55,39 +55,39 @@ function VaojaPlayer({ initialText }: TtsPlayerProps) {
   };
 
   return (
-    <div className="bg-[#1a0f2b] border border-[#3b2b4f] rounded-xl p-6 shadow-lg w-full text-white space-y-6">
-      <h2 className="text-xl font-bold text-white">🗣️ Text-to-Speech</h2>
+    <div className="bg-[#fff7e6] border border-[#ecd9a5] rounded-xl p-6 shadow-md w-full text-[#4e2b1d] space-y-6">
+      <h2 className="text-xl font-bold text-[#6b3e1d]">🗣️ แปลงข้อความเป็นเสียงพ่อใหญ่บ้าน</h2>
 
       <textarea
         rows={4}
         value={text}
         onChange={e => setText(e.target.value)}
-        className="w-full p-3 border border-[#4a3b5c] bg-[#26183c] text-white rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
-        placeholder="กรอกข้อความที่ต้องการแปลงเสียง..."
+        className="w-full p-3 border border-[#e0c090] bg-[#fffaf2] text-[#4e2b1d] rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-[#f59e0b] font-medium"
+        placeholder="พิมพ์ข้อความที่อยากให้พ่อใหญ่บ้านประกาศ..."
         disabled={loading}
       />
 
       <button
         onClick={handleGenerateSpeech}
         disabled={loading || !text.trim()}
-        className={`w-full py-2 rounded-md text-white font-medium transition 
+        className={`w-full py-2 rounded-md font-medium text-white transition 
           ${loading
-            ? 'bg-gray-500 cursor-not-allowed'
-            : 'bg-gradient-to-r from-purple-700 to-indigo-800 hover:opacity-90 shadow-md'}`}
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-gradient-to-r from-[#eab308] to-[#b45309] hover:brightness-110 shadow'}`}
       >
-        {loading ? 'กำลังแปลงเสียง...' : 'แปลงข้อความเป็นเสียง'}
+        {loading ? 'กำลังแปลงเสียงเด้อ...' : '🔊 ฟังเสียงประกาศ'}
       </button>
 
       {error && (
-        <div className="p-3 bg-red-700 text-white border border-red-500 rounded-md">
+        <div className="p-3 bg-red-100 text-red-800 border border-red-300 rounded-md">
           ⚠️ {error}
         </div>
       )}
 
       {audioUrl && (
         <div className="mt-4">
-          <h3 className="text-lg font-semibold mb-2 text-gray-200">ฟังเสียงที่ได้:</h3>
-          <audio controls src={audioUrl} className="w-full rounded" />
+          <h3 className="text-lg font-semibold mb-2 text-[#5c3c1a]">ฟังเสียงที่แปลงได้:</h3>
+          <audio controls src={audioUrl} className="w-full rounded border border-[#e2c68c]" />
         </div>
       )}
     </div>
