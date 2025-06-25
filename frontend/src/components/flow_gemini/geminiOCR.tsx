@@ -1,12 +1,11 @@
 import { useState } from "react";
 
-const API_BASE = import.meta.env.VITE_DEV;
-
 type OCRUploaderProps = {
   onResult: (text: string) => void;
+  onFile: (file: File) => void;
 };
 
-export function GeminiOCR({ onResult }: OCRUploaderProps) {
+export function GeminiOCR({ onResult, onFile }: OCRUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [ocrText, setOcrText] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -14,7 +13,9 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    onFile(selectedFile);
     setError("");
   };
 
@@ -26,7 +27,7 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch(`${API_BASE}/api/gemini/`, {
+      const res = await fetch(`/api/gemini/`, {
         method: "POST",
         body: formData,
       });
@@ -47,48 +48,59 @@ export function GeminiOCR({ onResult }: OCRUploaderProps) {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-6 bg-[#fdfaf6] p-6 rounded-xl shadow-md border">
-      {/* Upload Section */}
-      <div className="bg-white p-6 rounded-xl border shadow-sm flex flex-col items-center space-y-4 w-full">
-        <h2 className="text-xl font-semibold">Upload Image</h2>
-        <div className="w-full border-2 border-dashed rounded-xl h-48 flex items-center justify-center text-gray-400">
-          <span>📷 Image Preview</span>
-        </div>
-        <input
-          type="file"
-          accept="application/pdf,image/*"
-          onChange={handleFileChange}
-          className="hidden"
-          id="upload"
-        />
-        <label
-          htmlFor="upload"
-          className="bg-[#88c2c3] text-white px-4 py-2 rounded-md cursor-pointer hover:bg-[#76b3b4] transition"
-        >
-          เลือกไฟล์
-        </label>
+    <div className="bg-[#1a0f2b] text-white p-6 rounded-xl space-y-6 border border-[#3b2b4f] shadow-lg">
+      <h2 className="text-xl font-semibold">📄 อัปโหลดเอกสารและดูผล OCR</h2>
 
-        <button
-          onClick={handleSubmit}
-          disabled={!file || loading}
-          className={`w-full py-2 rounded-md text-white font-medium transition 
-            ${!file || loading
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"}`}
-        >
-          {loading ? "กำลังประมวลผล..." : "ประมวลผล OCR"}
-        </button>
-
-        {error && <div className="text-red-600 text-sm">{error}</div>}
+      {/* Preview */}
+      <div className="w-full border-2 border-dashed border-[#4a3b5c] rounded-xl h-48 flex items-center justify-center text-gray-400 text-sm">
+        {file ? (
+          <img
+            src={URL.createObjectURL(file)}
+            alt="Preview"
+            className="max-h-40 object-contain rounded-md"
+          />
+        ) : (
+          <span>📷 Preview will appear here</span>
+        )}
       </div>
 
+      {/* File input */}
+      <input
+        type="file"
+        accept="application/pdf,image/*"
+        onChange={handleFileChange}
+        className="hidden"
+        id="upload"
+      />
+      <label
+        htmlFor="upload"
+        className="bg-gradient-to-r from-purple-600 to-indigo-700 text-white px-4 py-2 rounded-md cursor-pointer hover:opacity-90 transition text-center inline-block shadow"
+      >
+        📁 เลือกไฟล์
+      </label>
+
+      {/* OCR Button */}
+      <button
+        onClick={handleSubmit}
+        disabled={!file || loading}
+        className={`w-full py-2 rounded-md text-white font-semibold transition 
+          ${!file || loading
+            ? "bg-gray-500 cursor-not-allowed"
+            : "bg-gradient-to-r from-purple-700 to-indigo-800 hover:opacity-90 shadow-lg"}`}
+      >
+        {loading ? "กำลังประมวลผล..." : "🔍 ประมวลผล OCR"}
+      </button>
+
       {/* OCR Result */}
-      <div className="bg-white p-6 rounded-xl border shadow-sm">
-        <h2 className="text-xl font-semibold mb-2">OCR Result</h2>
-        <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+      <div>
+        <h3 className="text-lg font-semibold mb-2">OCR Result</h3>
+        <div className="whitespace-pre-wrap text-gray-300 leading-relaxed text-sm min-h-[6rem] border-t border-[#3b2b4f] pt-3">
           {ocrText || "ยังไม่มีผลลัพธ์"}
         </div>
       </div>
+
+      {/* Error */}
+      {error && <div className="text-red-400 text-sm">{error}</div>}
     </div>
   );
 }

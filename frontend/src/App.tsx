@@ -1,114 +1,100 @@
-import './App.css'
-import { useState } from "react";
-import { TyphoonOCR } from "./components/flow_typhoon/typhoonOCR";
-import { TextSummary } from "./components/flow_typhoon/TextSummary";
+import './App.css';
+import { useState, useEffect } from "react";
 import { GeminiOCR } from './components/flow_gemini/geminiOCR';
 import { TextSummary_gemini } from './components/flow_gemini/TextSummary_gemini';
 import VaojaPlayer from './components/flow_gemini/VaojaPlayer';
 import { History } from './components/Rendder/History';
 
 function App() {
-  const [ocrText, setOcrText] = useState<string>("")
-  const [summaryText,setSummaryText] = useState<string>("")
+  const [ocrText, setOcrText] = useState<string>("");
+  const [summaryText, setSummaryText] = useState<string>("");
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-  const [selectModel, setSelectModel] = useState<number | "">("")
+  const [selectModel, setSelectModel] = useState<number | "">("");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("draftText");
+    if (saved) setSummaryText(saved);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("draftText", summaryText);
+  }, [summaryText]);
 
   const models = [
-    { id: 1, label: "📄 อัปโหลดเอกสาร" },
-    { id: 2, label: "✍️ กรอกข้อความ" },
+    { id: 1, label: "Upload Document" },
+    { id: 2, label: "Enter Text" },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-white py-10 px-4">
-      <div className="w-full bg-white shadow-xl rounded-2xl p-8 max-w-screen-xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
-          ระบบสรุปข้อความอัตโนมัติ
+    <div className="min-h-screen bg-gradient-to-br from-[#100519] via-[#1a0f2b] to-[#090214] text-white font-sans px-4 sm:px-6 md:px-12 lg:px-20 pb-16">
+
+      {/* Header */}
+      <header className="text-center py-12 space-y-3">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-md">
+          ระบบเสียงประกาศในชุมชน
         </h1>
+        <p className="text-purple-300 text-lg">
+          Summarize, Convert to Voice, and Preview in Seconds
+        </p>
+      </header>
 
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700">เลือกวิธีการใช้งาน:</h2>
-          <div className="flex flex-wrap gap-4">
-            {models.map((model) => (
-              <button
-                key={model.id}
-                onClick={() => setSelectModel(model.id)}
-                className={`px-5 py-2 rounded-full border text-sm font-medium transition-all
+      {/* Mode Selection */}
+      <section className="mb-10 space-y-4 text-center">
+        <h2 className="text-xl font-semibold text-purple-200">เลือกวิธีใช้งาน</h2>
+        <div className="flex justify-center gap-4 flex-wrap">
+          {models.map((model) => (
+            <button
+              key={model.id}
+              onClick={() => setSelectModel(model.id)}
+              className={`px-6 py-3 rounded-full text-base font-medium transition-all duration-200 transform shadow-md
                 ${selectModel === model.id
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "bg-white text-blue-600 border-blue-600 hover:bg-blue-50"}`}
-              >
-                {model.label}
-              </button>
-            ))}
-          </div>
+                  ? "bg-gradient-to-r from-purple-700 to-indigo-700 text-white scale-105"
+                  : "bg-[#1e1330] border border-[#3a2b4d] text-gray-300 hover:bg-[#2a1f44] hover:scale-105"}`}
+            >
+              {model.label}
+            </button>
+          ))}
         </div>
+      </section>
 
-        {selectModel === "" && (
-          <div className="p-6 text-center text-gray-500 border border-dashed rounded-lg bg-gray-50">
-            กรุณาเลือกวิธีการใช้งานก่อนเริ่ม
-          </div>
-        )}
+      {/* Default Notice */}
+      {selectModel === "" && (
+        <div className="text-center text-gray-400 mb-12 italic">
+          กรุณาเลือกวิธีใช้งานเพื่อเริ่มต้น
+        </div>
+      )}
 
-        {selectModel === 0 && (
-          <div className="space-y-6">
-            <TyphoonOCR onResult={setOcrText} />
-            {ocrText && <TextSummary initialText={ocrText} />}
-          </div>
-        )}
+      {/* Upload Document Mode */}
+      {selectModel === 1 && (
+        <section className="space-y-10">
+          <GeminiOCR onResult={setOcrText} onFile={setUploadedImage} />
+          {ocrText && (
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-purple-200">
+                📄 ข้อความที่ตรวจพบจากเอกสาร
+              </h2>
+              <TextSummary_gemini
+                initialText={ocrText}
+                uploadedImage={uploadedImage}
+              />
+            </div>
+          )}
+        </section>
+      )}
 
-        {selectModel === 1 && (
-          <div className="space-y-6">
-            <GeminiOCR onResult={setOcrText} onFile={setUploadedImage} />
-            {ocrText && <TextSummary_gemini initialText={ocrText}  uploadedImage={uploadedImage} />}
-          </div>
-        )}
+      {/* Enter Text Mode */}
+      {selectModel === 2 && (
+        <section className="space-y-6">
+          <VaojaPlayer initialText={summaryText} />
+        </section>
+      )}
 
-        {selectModel === 2 && (
-          <div className="space-y-6">
-            <VaojaPlayer initialText={summaryText} />
-            {/* <ModelTwoComponent text={ocrText} /> */}
-          </div>
-        )}
-      </div>
-
-      <History />
-
-      {/* Always visible */}
-      {/* <div className="mt-10 max-w-3xl mx-auto">
-        <VaojaPlayer initialText={summaryText} />
-      </div> */}
+      {/* History */}
+      <footer className="mt-20 max-w-4xl mx-auto">
+        <History />
+      </footer>
     </div>
-  )
+  );
 }
 
-export default App
-
-
-
-
-
-// import './App.css'
-// import { useState } from "react";
-// import { GeminiOCR } from './components/flow_gemini/geminiOCR';
-// import { TextSummary_gemini } from './components/flow_gemini/TextSummary_gemini';
-// import { History } from './components/Rendder/History';
-
-// function App() {
-//   const [ocrText, setOcrText] = useState<string>("")
-//   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-
-//   return (
-//     <div className="min-h-screen bg-white p-6">
-
-
-//       <div className="space-y-6">
-//         <GeminiOCR onResult={setOcrText} onFile={setUploadedImage} />
-//         {ocrText && <TextSummary_gemini initialText={ocrText}  uploadedImage={uploadedImage} />}
-//       </div>
-//       <History />
-
-//     </div>
-//   )
-// }
-
-// export default App
+export default App;

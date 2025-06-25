@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-const API_BASE = import.meta.env.VITE_DEV;
-
 type TtsPlayerProps = {
   initialText: string;
 };
@@ -23,7 +21,7 @@ function VaojaPlayer({ initialText }: TtsPlayerProps) {
     setAudioUrl(null);
 
     try {
-      const response = await fetch(`${API_BASE}/api/vaoja-tts`, {
+      const response = await fetch(`/api/vaoja-tts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,36 +55,38 @@ function VaojaPlayer({ initialText }: TtsPlayerProps) {
   };
 
   return (
-    <div className="bg-white border rounded-xl p-6 shadow-sm w-full">
-      <h2 className="text-xl font-bold mb-4">🔊 Text-to-Speech</h2>
+    <div className="bg-[#1a0f2b] border border-[#3b2b4f] rounded-xl p-6 shadow-lg w-full text-white space-y-6">
+      <h2 className="text-xl font-bold text-white">🗣️ Text-to-Speech</h2>
 
       <textarea
         rows={4}
         value={text}
         onChange={e => setText(e.target.value)}
-        className="w-full p-3 border rounded-md mb-4 resize-none focus:outline-none focus:ring-2 focus:ring-blue-300"
+        className="w-full p-3 border border-[#4a3b5c] bg-[#26183c] text-white rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
         placeholder="กรอกข้อความที่ต้องการแปลงเสียง..."
         disabled={loading}
       />
 
       <button
         onClick={handleGenerateSpeech}
-        disabled={loading}
+        disabled={loading || !text.trim()}
         className={`w-full py-2 rounded-md text-white font-medium transition 
-          ${loading ? "bg-gray-300" : "bg-blue-600 hover:bg-blue-700"}`}
+          ${loading
+            ? 'bg-gray-500 cursor-not-allowed'
+            : 'bg-gradient-to-r from-purple-700 to-indigo-800 hover:opacity-90 shadow-md'}`}
       >
-        {loading ? "กำลังแปลงเสียง..." : "แปลงข้อความเป็นเสียง"}
+        {loading ? 'กำลังแปลงเสียง...' : 'แปลงข้อความเป็นเสียง'}
       </button>
 
       {error && (
-        <div className="mt-4 p-3 bg-red-50 text-red-600 border border-red-300 rounded">
+        <div className="p-3 bg-red-700 text-white border border-red-500 rounded-md">
           ⚠️ {error}
         </div>
       )}
 
       {audioUrl && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">ฟังเสียงที่ได้</h3>
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold mb-2 text-gray-200">ฟังเสียงที่ได้:</h3>
           <audio controls src={audioUrl} className="w-full rounded" />
         </div>
       )}
