@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://nginx-proxy:8080',
+        target: 'http://backend:8000',
         changeOrigin: true,
         secure: false,
       },
