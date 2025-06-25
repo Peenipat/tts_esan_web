@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { parseSummary } from "../parseSummary";
 import { generateSpeechForList } from "../generateSpeechForList";
 import { combineAudio } from "../combineAudio";
@@ -11,10 +11,6 @@ type TextSummaryProps = {
   onSummaryGenerated?: (text: string) => void;
 };
 
-interface SummaryItem {
-  id: string;
-  text: string;
-}
 
 type BundleData = {
   bundle_id: string;
